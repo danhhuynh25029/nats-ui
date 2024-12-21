@@ -22,127 +22,18 @@ import { ChevronRight } from "lucide-react"
 const data = {
     navMain: [
         {
-            title: "Topics",
+            title: "JetStream",
             url: "#",
             items: [
                 {
-                    title: "Installation",
+                    title: "Subject",
                     url: "#",
+                    isActive: false,
                 },
                 {
-                    title: "Project Structure",
+                    title: "Key/Value Store",
                     url: "#",
-                },
-            ],
-        },
-        {
-            title: "Building Your Application",
-            url: "#",
-            items: [
-                {
-                    title: "Routing",
-                    url: "#",
-                },
-                {
-                    title: "Data Fetching",
-                    url: "#",
-                    isActive: true,
-                },
-                {
-                    title: "Rendering",
-                    url: "#",
-                },
-                {
-                    title: "Caching",
-                    url: "#",
-                },
-                {
-                    title: "Styling",
-                    url: "#",
-                },
-                {
-                    title: "Optimizing",
-                    url: "#",
-                },
-                {
-                    title: "Configuring",
-                    url: "#",
-                },
-                {
-                    title: "Testing",
-                    url: "#",
-                },
-                {
-                    title: "Authentication",
-                    url: "#",
-                },
-                {
-                    title: "Deploying",
-                    url: "#",
-                },
-                {
-                    title: "Upgrading",
-                    url: "#",
-                },
-                {
-                    title: "Examples",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "API Reference",
-            url: "#",
-            items: [
-                {
-                    title: "Components",
-                    url: "#",
-                },
-                {
-                    title: "File Conventions",
-                    url: "#",
-                },
-                {
-                    title: "Functions",
-                    url: "#",
-                },
-                {
-                    title: "next.config.js Options",
-                    url: "#",
-                },
-                {
-                    title: "CLI",
-                    url: "#",
-                },
-                {
-                    title: "Edge Runtime",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Architecture",
-            url: "#",
-            items: [
-                {
-                    title: "Accessibility",
-                    url: "#",
-                },
-                {
-                    title: "Fast Refresh",
-                    url: "#",
-                },
-                {
-                    title: "Next.js Compiler",
-                    url: "#",
-                },
-                {
-                    title: "Supported Browsers",
-                    url: "#",
-                },
-                {
-                    title: "Turbopack",
-                    url: "#",
+                    isActive: false,
                 },
             ],
         },
@@ -153,6 +44,7 @@ const data = {
                 {
                     title: "Contribution Guide",
                     url: "#",
+                    isActive: false
                 },
             ],
         },
@@ -160,6 +52,31 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const [menuData, setMenuData] = React.useState(data);
+    const handleEvent = (item: { title: string; url: string; isActive: boolean } | { title: string; url: string; isActive?: undefined }) => {
+        const updatedMenuData = {
+            ...menuData,
+            navMain: menuData.navMain.map((menuItem) => ({
+                ...menuItem,
+                items: menuItem.items.map((i) => (i.title === item.title ? { ...i, isActive: true } : {...i, isActive: false})),
+            })),
+        };
+        setMenuData(updatedMenuData)
+    }
+
+    React.useEffect(() => {
+        const data = fetch('http://localhost:8080/ping', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(
+            data => data.json()
+        )
+        console.log(data)
+    }, []);
+
+
     return (
         <Sidebar variant="floating" {...props}>
             <SidebarHeader>
@@ -180,7 +97,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                {data.navMain.map((item) => (
+                {menuData.navMain.map((item) => (
                     <Collapsible
                         key={item.title}
                         title={item.title}
@@ -201,7 +118,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 <SidebarGroupContent>
                                     <SidebarMenu>
                                         {item.items.map((item) => (
-                                            <SidebarMenuItem key={item.title}>
+                                            <SidebarMenuItem key={item.title} onClick={() => handleEvent(item)}>
                                                 <SidebarMenuButton asChild isActive={item.isActive}>
                                                     <a href={item.url}>{item.title}</a>
                                                 </SidebarMenuButton>
