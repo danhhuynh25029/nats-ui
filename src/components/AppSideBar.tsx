@@ -18,7 +18,8 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { ChevronRight } from "lucide-react"
-// This is sample data.
+
+
 const data = {
     navMain: [
         {
@@ -51,9 +52,15 @@ const data = {
     ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+interface SidebarProps {
+    onItemClicked: (item: string) => void;
+}
+export const AppSidebar: React.FC<SidebarProps> = ({ onItemClicked }) => {
+// export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const [menuData, setMenuData] = React.useState(data);
     const handleEvent = (item: { title: string; url: string; isActive: boolean } | { title: string; url: string; isActive?: undefined }) => {
+        onItemClicked(item.title)
         const updatedMenuData = {
             ...menuData,
             navMain: menuData.navMain.map((menuItem) => ({
@@ -64,21 +71,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         setMenuData(updatedMenuData)
     }
 
-    React.useEffect(() => {
-        const data = fetch('http://localhost:8080/ping', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(
-            data => data.json()
-        )
-        console.log(data)
-    }, []);
-
-
     return (
-        <Sidebar variant="floating" {...props}>
+        <Sidebar variant="floating" >
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>

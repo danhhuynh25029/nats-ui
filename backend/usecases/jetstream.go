@@ -20,6 +20,7 @@ func NewJetStreamSVC() *JetStreamSVC {
 }
 
 func (j JetStreamSVC) GetMessageFromJetStream(ctx context.Context, req model.GetMessageFromJetStreamRequest) (*model.GetMessageFromJetStreamResponse, error) {
+
 	url := "nats://localhost:4222"
 	nc, err := nats.Connect(url)
 	if err != nil {
@@ -47,7 +48,8 @@ func (j JetStreamSVC) GetMessageFromJetStream(ctx context.Context, req model.Get
 		var messageResp model.Message
 		msg, last, err := pgr.NextMsg(context.Background())
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("pgr.NextMsg : %v", err)
+			return nil, err
 		}
 		meta, err := jsm.ParseJSMsgMetadata(msg)
 		if err == nil {

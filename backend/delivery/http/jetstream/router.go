@@ -14,6 +14,6 @@ func NewRouter(handler *Handler) Router {
 
 func (u *Router) UseRoute(r *gin.RouterGroup) {
 	group := r.Group("/jetstream")
-	group.GET("/message", u.handler.GetMessageFromJetStream)
+	group.POST("/message", u.handler.GetMessageFromJetStream)
 	group.GET("/streams", u.handler.GetAllStream)
 }
