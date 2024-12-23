@@ -31,3 +31,8 @@ type Stream struct {
 type Consumer struct {
 	Name string `json:"name"`
 }
+
+type KeyValue struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}

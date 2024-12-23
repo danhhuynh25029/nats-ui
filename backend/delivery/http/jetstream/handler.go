@@ -35,3 +35,12 @@ func (u *Handler) GetAllStream(ctx *gin.Context) {
 	resp := u.JetStreamBiz.GetAllStream()
 	ctx.JSON(http.StatusOK, resp)
 }
+
+func (u *Handler) GetBucketKeys(ctx *gin.Context) {
+	keys, err := u.JetStreamBiz.GetListKeyOfBucket(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"keys": keys})
+}

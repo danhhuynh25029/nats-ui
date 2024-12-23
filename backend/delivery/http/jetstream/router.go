@@ -16,4 +16,5 @@ func (u *Router) UseRoute(r *gin.RouterGroup) {
 	group := r.Group("/jetstream")
 	group.POST("/message", u.handler.GetMessageFromJetStream)
 	group.GET("/streams", u.handler.GetAllStream)
+	group.GET("/buckets/key", u.handler.GetBucketKeys)
 }
