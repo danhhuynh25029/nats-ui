@@ -7,7 +7,7 @@ import (
 	"github.com/nats-io/jsm.go"
 	"github.com/nats-io/nats.go"
 	"log"
-	"nats-ui/model"
+	"nats-ui/internal/model"
 	"nats-ui/pkg"
 	"time"
 )

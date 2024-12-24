@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"nats-ui/delivery/http/jetstream"
-	"nats-ui/usecases"
+	jetstream2 "nats-ui/internal/delivery/http/jetstream"
+	"nats-ui/internal/usecases"
 )
 
 func main() {
@@ -17,8 +17,8 @@ func main() {
 	group := r.Group("/api")
 
 	jetStreamSVC := usecases.NewJetStreamSVC()
-	jetStreamHandler := jetstream.NewJetStreamHandler(jetStreamSVC)
-	jetStreamRouter := jetstream.NewRouter(jetStreamHandler)
+	jetStreamHandler := jetstream2.NewJetStreamHandler(jetStreamSVC)
+	jetStreamRouter := jetstream2.NewRouter(jetStreamHandler)
 	jetStreamRouter.UseRoute(group)
 
 	r.Run() // listen and serve on 0.0.0.0:8080

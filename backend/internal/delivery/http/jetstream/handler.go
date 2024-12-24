@@ -2,8 +2,8 @@ package jetstream
 
 import (
 	"github.com/gin-gonic/gin"
-	"nats-ui/model"
-	"nats-ui/usecases"
+	"nats-ui/internal/model"
+	"nats-ui/internal/usecases"
 	"net/http"
 )
 

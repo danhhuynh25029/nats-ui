@@ -3,7 +3,7 @@ package usecases
 import (
 	"context"
 	"log"
-	"nats-ui/model"
+	"nats-ui/internal/model"
 	"nats-ui/pkg"
 )
 
