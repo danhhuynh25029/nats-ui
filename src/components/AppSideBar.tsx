@@ -27,7 +27,7 @@ const data = {
             url: "#",
             items: [
                 {
-                    title: "Subject",
+                    title: "Stream",
                     url: "#",
                     isActive: false,
                 },
@@ -56,6 +56,7 @@ const data = {
 interface SidebarProps {
     onItemClicked: (item: string) => void;
 }
+
 export const AppSidebar: React.FC<SidebarProps> = ({ onItemClicked }) => {
 // export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const [menuData, setMenuData] = React.useState(data);

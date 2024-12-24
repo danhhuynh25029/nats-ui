@@ -4,6 +4,7 @@ import {
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
+    BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
@@ -26,11 +27,9 @@ export default function Home() {
     const [breadcrumbItems, setBreadcrumbItems] = useState<string[]>([]);
 
     const handleItemClick = (item: string) => {
-        const uniqueStringsSet = new Set(breadcrumbItems);
-        if (!uniqueStringsSet.has(item)) {
-            uniqueStringsSet.add(item);
-            setBreadcrumbItems(Array.from(uniqueStringsSet));
-        }
+        console.log(item)
+        const newBreadCrumbItems = ["JetStream",item]
+        setBreadcrumbItems(newBreadCrumbItems);
     };
     return (
         <SidebarProvider
@@ -46,28 +45,25 @@ export default function Home() {
                     <SidebarTrigger className="-ml-1" />
                     <Separator orientation="vertical" className="mr-2 h-4" />
                     <Breadcrumb>
-                        <BreadcrumbList>
-                            {breadcrumbItems.map((i, index, array) =>(
+                        {/* <BreadcrumbList>
+                            {  breadcrumbItems.length > 0 ?
+                             breadcrumbItems.map((item, index, array) =>(
                                 <><BreadcrumbItem className="hidden md:block">
-                                    <BreadcrumbLink href="#">
-                                        {i}
+                                    <BreadcrumbLink href="/table" key={item}>
+                                        {item}
                                     </BreadcrumbLink>
                                   </BreadcrumbItem>
                                     {index != array.length - 1 ? <BreadcrumbSeparator className="hidden md:block"/> : null}
                                  </>
                                 )
-                            )
+                            ) : null
                             }
-
-                            {/*<BreadcrumbItem>*/}
-                            {/*    <BreadcrumbPage>Data 1</BreadcrumbPage>*/}
-                            {/*</BreadcrumbItem>*/}
-                        </BreadcrumbList>
+                        </BreadcrumbList> */}
                     </Breadcrumb>
                 </header>
                 <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
                     <div className="container mx-auto py-10">
-                        <DataTable />
+                        <DataTable breadItems={breadcrumbItems}  />
                     </div>
                 </div>
             </SidebarInset>

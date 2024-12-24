@@ -19,15 +19,18 @@ import * as React from "react";
 import {
     GetMessageFormJetStream,
     GetMessageFromJetStreamReq,
-    Message
+    GetStreamFromJetStream,
+    Message,
+    Stream
 } from "@/services/jetstream.ts";
+import { formToJSON } from "axios";
 // import {Message} from "postcss";
 
 
 
 
 
-const columns: ColumnDef<Message>[] = [
+const columnMessage: ColumnDef<Message>[] = [
     {
         accessorKey: "sequence",
         header: "sequence",
@@ -47,26 +50,57 @@ const columns: ColumnDef<Message>[] = [
 
 ]
 
+const columnsStream: ColumnDef<Stream>[] = [
+    {
+        accessorKey: "Name",
+        header: "Name",
+    },
+    {
+        accessorKey: "total_message",
+        header: "Total Message"
+    },
+    {
+        accessorKey : "size",
+        header: "Size"
+    },
+    {
+        accessorKey: "created",
+        header: "created"
+    }
+];
+interface DataTableProps {
+    breadItems : string[]
+}
 
-export function DataTable() {
-    const [data, setData] = React.useState<Message[]>([])
 
+export const DataTable : React.FC<DataTableProps> = ({breadItems}) => {
+    const [data, setData] = React.useState<any[]>([])
+    const [columns,setColumn] = React.useState<ColumnDef<any>[]>([])
 
     React.useEffect(() => {
+        console.log("12121",breadItems)
         const fetchMessage = async () => {
-            const req: GetMessageFromJetStreamReq = {
-                stream_name: "EVENTS"
-            }
-            try {
-                const resp =  await GetMessageFormJetStream(req);
-                console.log(resp.messages)
-                setData(resp.messages)
-            } catch (e) {
-                console.log(e)
+            console.log(breadItems[breadItems.length -1])
+            if (breadItems[breadItems.length -1] === "Stream") {
+                const resp = await GetStreamFromJetStream();
+                console.log(resp)
+                setData(resp)
+                setColumn(columnsStream)
+            }else{
+                const req: GetMessageFromJetStreamReq = {
+                    stream_name: "EVENTS"
+                }
+                try {
+                    const resp =  await GetMessageFormJetStream(req);
+                    setColumn(columnMessage)
+                    setData(resp.messages)
+                } catch (e) {
+                    console.log(e)
+                }
             }
         }
         fetchMessage()
-    }, []);
+    }, [breadItems]);
 
     const table = useReactTable({
         data,

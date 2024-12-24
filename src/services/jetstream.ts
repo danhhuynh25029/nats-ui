@@ -54,7 +54,7 @@ export interface GetStreamResponse {
 }
 
 
-export const GetSubjectsFromStream = async () : Promise<GetStreamResponse> => {
+export const GetStreamFromJetStream = async () : Promise<Stream[]> => {
     try {
         const result =  await  axios.get("http://localhost:8080/api/jetstream/streams");
         return result.data;
