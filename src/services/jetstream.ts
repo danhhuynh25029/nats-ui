@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export interface GetMessageFromJetStreamReq {
-    stream_name: string;
+    stream_name: string | null;
 }
 
 export interface Message {
@@ -21,7 +21,7 @@ export interface GetMessageFromJetStreamResponse {
 
 export const GetMessageFormJetStream =   async (req : GetMessageFromJetStreamReq) : Promise<GetMessageFromJetStreamResponse> => {
    try {
-       const result =  await  axios.post("http://localhost:8080/api/jetstream/message",req);
+       const result =  await  axios.post("http://localhost:8080/api/jetstream/messages",req);
        return result.data;
    }catch(err) {
        console.log(err);
@@ -48,11 +48,20 @@ export interface Stream {
     consumers?: Consumer[];
 }
 
-export interface GetStreamResponse {
-    total : number;
-    subjects : Stream[];
+
+export interface Key{
+    key : string,
+    value: string
 }
 
+export interface GetKeyRequest {
+    bucket : string | null
+}
+
+export interface GetKeyResponse {
+    keys : Key[],
+    total: number
+}
 
 export const GetStreamFromJetStream = async () : Promise<Stream[]> => {
     try {
@@ -64,5 +73,22 @@ export const GetStreamFromJetStream = async () : Promise<Stream[]> => {
     }
 }
 
+export const GetBucketFromJetStream = async () : Promise<Stream[]> => {     
+    try {
+        const result =  await  axios.get("http://localhost:8080/api/jetstream/buckets");
+        return result.data;
+    }catch(err) {
+        console.log(err);
+        throw err;
+    }
+}
 
-
+export const GetKeyFromBucket = async(req: GetKeyRequest) : Promise<GetKeyResponse> => {
+    try {
+        const result =  await  axios.post("http://localhost:8080/api/jetstream/keys",req);
+        return result.data;
+    }catch(err) {
+        console.log(err);
+        throw err;      
+    }
+}

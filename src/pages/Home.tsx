@@ -13,8 +13,8 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from "@/components/ui/sidebar"
-import React, {useState} from "react";
-import {DataTable} from "@/components/DataTable.tsx";
+import React, { useState } from "react";
+import { DataTable } from "@/components/DataTable.tsx";
 
 
 export interface BreadcrumbItem {
@@ -24,49 +24,38 @@ export interface BreadcrumbItem {
 
 
 export default function Home() {
+
+    const [activeItem, setActiveItem] = useState({
+        title: "Welcome",
+        content: "Select an item from the sidebar to view its content.",
+    })
+
     const [breadcrumbItems, setBreadcrumbItems] = useState<string[]>([]);
 
     const handleItemClick = (item: string) => {
-        console.log(item)
-        const newBreadCrumbItems = ["JetStream",item]
+        const newBreadCrumbItems =  [item]
         setBreadcrumbItems(newBreadCrumbItems);
     };
     return (
-        <SidebarProvider
-            style={
-                {
-                    "--sidebar-width": "19rem",
-                } as React.CSSProperties
-            }
-         >
-            <AppSidebar onItemClicked={handleItemClick} />
+        <>
+            {/* <AppSidebar onItemClicked={handleItemClick} /> */}
             <SidebarInset>
                 <header className="flex h-16 shrink-0 items-center gap-2 px-4">
                     <SidebarTrigger className="-ml-1" />
                     <Separator orientation="vertical" className="mr-2 h-4" />
                     <Breadcrumb>
-                        {/* <BreadcrumbList>
-                            {  breadcrumbItems.length > 0 ?
-                             breadcrumbItems.map((item, index, array) =>(
-                                <><BreadcrumbItem className="hidden md:block">
-                                    <BreadcrumbLink href="/table" key={item}>
-                                        {item}
-                                    </BreadcrumbLink>
-                                  </BreadcrumbItem>
-                                    {index != array.length - 1 ? <BreadcrumbSeparator className="hidden md:block"/> : null}
-                                 </>
-                                )
-                            ) : null
-                            }
-                        </BreadcrumbList> */}
+                        <BreadcrumbList>
+                            <BreadcrumbItem className="hidden md:block">
+                                <BreadcrumbLink href="#">Documentation</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="hidden md:block" />
+                            <BreadcrumbItem>
+                                <BreadcrumbPage>{breadcrumbItems[0]}</BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
                     </Breadcrumb>
                 </header>
-                <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                    <div className="container mx-auto py-10">
-                        <DataTable breadItems={breadcrumbItems}  />
-                    </div>
-                </div>
             </SidebarInset>
-        </SidebarProvider>
-    )
+            </>
+    )   
 }

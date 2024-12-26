@@ -36,11 +36,25 @@ func (u *Handler) GetAllStream(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
-func (u *Handler) GetBucketKeys(ctx *gin.Context) {
-	keys, err := u.JetStreamBiz.GetListKeyOfBucket(ctx)
+func (u *Handler) GetAllBuckets(ctx *gin.Context) {
+	resp, err := u.JetStreamBiz.GetListBucket(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"keys": keys})
+	ctx.JSON(http.StatusOK, resp)
+}
+
+func (u *Handler) GetBucketKeys(ctx *gin.Context) {
+	var req model.GetKeysReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	keys, err := u.JetStreamBiz.GetListKeyOfBucket(ctx, req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, keys)
 }

@@ -36,3 +36,17 @@ type KeyValue struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
 }
+
+type GetKeysReq struct {
+	Bucket string `json:"bucket"`
+}
+
+type Key struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
+type GetKeysResp struct {
+	Keys  []KeyValue `json:"keys"`
+	Total int        `json:"total"`
+}

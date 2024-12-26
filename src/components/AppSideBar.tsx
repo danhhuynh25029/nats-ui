@@ -1,5 +1,5 @@
 import * as React from "react"
-import { GalleryVerticalEnd } from "lucide-react"
+import { GalleryVerticalEnd, MoreHorizontal } from "lucide-react"
 
 import {
     Sidebar,
@@ -18,22 +18,31 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { ChevronRight } from "lucide-react"
+import { title } from "process"
+import { url } from "inspector"
 
 
 const data = {
+    navDashBoard: [
+        {
+            title: "Dashboard",
+            url: "#"
+        },
+    ],
     navMain: [
+
         {
             title: "JetStream",
             url: "#",
             items: [
                 {
-                    title: "Stream",
-                    url: "#",
+                    title: "Streams",
+                    url: "/streams",
                     isActive: false,
                 },
                 {
-                    title: "Key/Value Store",
-                    url: "#",
+                    title: "Buckets",
+                    url: "/buckets",
                     isActive: false,
                 },
             ],
@@ -58,7 +67,7 @@ interface SidebarProps {
 }
 
 export const AppSidebar: React.FC<SidebarProps> = ({ onItemClicked }) => {
-// export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    // export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const [menuData, setMenuData] = React.useState(data);
     const handleEvent = (item: { title: string; url: string; isActive: boolean } | { title: string; url: string; isActive?: undefined }) => {
         onItemClicked(item.title)
@@ -66,7 +75,7 @@ export const AppSidebar: React.FC<SidebarProps> = ({ onItemClicked }) => {
             ...menuData,
             navMain: menuData.navMain.map((menuItem) => ({
                 ...menuItem,
-                items: menuItem.items.map((i) => (i.title === item.title ? { ...i, isActive: true } : {...i, isActive: false})),
+                items: menuItem.items.map((i) => (i.title === item.title ? { ...i, isActive: true } : { ...i, isActive: false })),
             })),
         };
         setMenuData(updatedMenuData)
@@ -92,6 +101,13 @@ export const AppSidebar: React.FC<SidebarProps> = ({ onItemClicked }) => {
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
+
+                <SidebarGroup>
+                    <SidebarGroupLabel className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                        <span>Dashboard</span>
+                    </SidebarGroupLabel>
+                </SidebarGroup>
+
                 {menuData.navMain.map((item) => (
                     <Collapsible
                         key={item.title}

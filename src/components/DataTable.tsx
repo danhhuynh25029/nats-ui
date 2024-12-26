@@ -4,6 +4,7 @@ import {
     ColumnDef,
     flexRender,
     getCoreRowModel,
+    getPaginationRowModel,
     useReactTable,
 } from "@tanstack/react-table"
 
@@ -24,90 +25,28 @@ import {
     Stream
 } from "@/services/jetstream.ts";
 import { formToJSON } from "axios";
-// import {Message} from "postcss";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
+import { Button } from "./ui/button";
 
 
-
-
-
-const columnMessage: ColumnDef<Message>[] = [
-    {
-        accessorKey: "sequence",
-        header: "sequence",
-    },
-    {
-        accessorKey: "data",
-        header: "data",
-    },
-    {
-        accessorKey: "subject",
-        header: "subject",
-    },
-    {
-        accessorKey: "received",
-        header: "received",
-    },
-
-]
-
-const columnsStream: ColumnDef<Stream>[] = [
-    {
-        accessorKey: "Name",
-        header: "Name",
-    },
-    {
-        accessorKey: "total_message",
-        header: "Total Message"
-    },
-    {
-        accessorKey : "size",
-        header: "Size"
-    },
-    {
-        accessorKey: "created",
-        header: "created"
-    }
-];
 interface DataTableProps {
-    breadItems : string[]
+    breadItems: string[],
+    data : any[],
+    columns: ColumnDef<any>[],
 }
 
 
-export const DataTable : React.FC<DataTableProps> = ({breadItems}) => {
-    const [data, setData] = React.useState<any[]>([])
-    const [columns,setColumn] = React.useState<ColumnDef<any>[]>([])
-
-    React.useEffect(() => {
-        console.log("12121",breadItems)
-        const fetchMessage = async () => {
-            console.log(breadItems[breadItems.length -1])
-            if (breadItems[breadItems.length -1] === "Stream") {
-                const resp = await GetStreamFromJetStream();
-                console.log(resp)
-                setData(resp)
-                setColumn(columnsStream)
-            }else{
-                const req: GetMessageFromJetStreamReq = {
-                    stream_name: "EVENTS"
-                }
-                try {
-                    const resp =  await GetMessageFormJetStream(req);
-                    setColumn(columnMessage)
-                    setData(resp.messages)
-                } catch (e) {
-                    console.log(e)
-                }
-            }
-        }
-        fetchMessage()
-    }, [breadItems]);
+export const DataTable: React.FC<DataTableProps> = ({ breadItems,data,columns}) => {
 
     const table = useReactTable({
         data,
         columns,
-        getCoreRowModel: getCoreRowModel()
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
     })
     return (
+        <>
         <div className="rounded-md border">
             <Table>
                 <TableHeader>
@@ -152,5 +91,24 @@ export const DataTable : React.FC<DataTableProps> = ({breadItems}) => {
                 </TableBody>
             </Table>
         </div>
+        <div className="flex items-center justify-end space-x-2 py-4">
+        <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+        >
+            Previous
+        </Button>
+        <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+        >
+            Next
+        </Button>
+    </div>
+    </>
     )
 }

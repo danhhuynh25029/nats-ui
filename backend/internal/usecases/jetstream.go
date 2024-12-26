@@ -108,6 +108,9 @@ func (j JetStreamSVC) GetAllStream() []model.Stream {
 	}
 	var resp []model.Stream
 	for _, v := range streams {
+		if v.IsKVBucket() {
+			continue
+		}
 		var consumers []model.Consumer
 		_, err := v.EachConsumer(func(consumer *jsm.Consumer) {
 			consumers = append(consumers, model.Consumer{Name: consumer.Name()})
