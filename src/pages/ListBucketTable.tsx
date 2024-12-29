@@ -3,7 +3,7 @@ import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbS
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
-import { GetBucketFromJetStream, GetMessageFromJetStreamReq, GetStreamFromJetStream, Stream } from "@/services/jetstream"
+import { GetBucketFromJetStream, Stream } from "@/services/jetstream"
 import { Separator } from "@radix-ui/react-separator"
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
@@ -32,7 +32,7 @@ const columnsBucket: ColumnDef<Stream>[] = [
     {
         id: "actions",
         cell: ({ row }) => {
-            const payment = row.original
+            const bucket = row.original
 
             return (
                 <DropdownMenu>
@@ -45,12 +45,12 @@ const columnsBucket: ColumnDef<Stream>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(payment.name)}
+                            onClick={() => navigator.clipboard.writeText(bucket.name)}
                         >
                             Publish Messages
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem><a href={"/buckets/keys?buckets=" + payment.name} >View Keys</a></DropdownMenuItem>
+                        <DropdownMenuItem><a href={"/buckets/keys?buckets=" + bucket.name} >View Keys</a></DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             )
@@ -59,15 +59,14 @@ const columnsBucket: ColumnDef<Stream>[] = [
 ];
 
 export const ListBucketTable = () => {
-    const [data, setData] = React.useState<any[]>([])
-    const [columns, setColumn] = React.useState<ColumnDef<any>[]>([])
+    const [data, setData] = React.useState<Stream[]>([])
+    const [columns, setColumn] = React.useState<ColumnDef<Stream>[]>([])
 
 
     React.useEffect(() => {
         const fetchMessage = async () => {
             try {
                 const resp = await GetBucketFromJetStream();
-                console.log(resp)
                 setData(resp)
                 setColumn(columnsBucket)
             } catch (e) {

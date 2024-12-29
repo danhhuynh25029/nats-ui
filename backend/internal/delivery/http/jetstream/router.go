@@ -18,4 +18,5 @@ func (u *Router) UseRoute(r *gin.RouterGroup) {
 	group.GET("/streams", u.handler.GetAllStream)
 	group.POST("/keys", u.handler.GetBucketKeys)
 	group.GET("/buckets", u.handler.GetAllBuckets)
+	group.POST("/publish", u.handler.PublishMessage)
 }

@@ -3,11 +3,12 @@ import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbS
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
-import { GetMessageFromJetStreamReq, GetStreamFromJetStream, Stream } from "@/services/jetstream"
-import { Separator } from "@radix-ui/react-separator"
+import {GetStreamFromJetStream, Stream} from "@/services/jetstream"
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
 import React from "react"
+
+import {Separator} from "@/components/ui/separator.tsx";
 
 
 
@@ -27,14 +28,14 @@ const columnsStream: ColumnDef<Stream>[] = [
     },
     {
         accessorKey: "created",
-        header: "created"
+        header: "Created"
     },
     {
         id: "actions",
         cell: ({ row }) => {
-            const payment = row.original
-
+            const stream = row.original
             return (
+
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
@@ -45,10 +46,10 @@ const columnsStream: ColumnDef<Stream>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem>
-                        <a href={"/streams/publish?event=" + payment.name} >Publish Messages</a>
+                        <a href={"/streams/publish?event=" + stream.name} >Detail</a>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem><a href={"/streams/messages?event=" + payment.name} >View Messages</a></DropdownMenuItem>
+                        <DropdownMenuItem><a href={"/streams/messages?event=" + stream.name} >View Messages</a></DropdownMenuItem>
                         <DropdownMenuItem>View Consumer</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -58,8 +59,8 @@ const columnsStream: ColumnDef<Stream>[] = [
 ];
 
 export const ListStreamTable = () => {
-    const [data, setData] = React.useState<any[]>([])
-    const [columns, setColumn] = React.useState<ColumnDef<any>[]>([])
+    const [data, setData] = React.useState<Stream[]>([])
+    const [columns, setColumn] = React.useState<ColumnDef<Stream>[]>([])
 
 
     React.useEffect(() => {

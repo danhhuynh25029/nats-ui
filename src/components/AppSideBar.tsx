@@ -1,5 +1,5 @@
 import * as React from "react"
-import { GalleryVerticalEnd, MoreHorizontal } from "lucide-react"
+import { GalleryVerticalEnd } from "lucide-react"
 
 import {
     Sidebar,
@@ -18,15 +18,12 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { ChevronRight } from "lucide-react"
-import { title } from "process"
-import { url } from "inspector"
-
 
 const data = {
     navDashBoard: [
         {
             title: "Dashboard",
-            url: "#"
+            url: "/"
         },
     ],
     navMain: [
@@ -103,12 +100,16 @@ export const AppSidebar: React.FC<SidebarProps> = ({ onItemClicked }) => {
             <SidebarContent>
 
                 <SidebarGroup>
-                    <SidebarGroupLabel className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-                        <span>Dashboard</span>
-                    </SidebarGroupLabel>
-                </SidebarGroup>
+                    <a href={menuData.navDashBoard[0].url}>
+                        <SidebarGroupLabel
+                            className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                            <span>Dashboard</span>
 
-                {menuData.navMain.map((item) => (
+            </SidebarGroupLabel>
+                    </a>
+        </SidebarGroup>
+
+{menuData.navMain.map((item) => (
                     <Collapsible
                         key={item.title}
                         title={item.title}

@@ -6,6 +6,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/nats-io/jsm.go"
 	"github.com/nats-io/nats.go"
+	"github.com/nats-io/nats.go/jetstream"
 	"log"
 	"nats-ui/internal/model"
 	"nats-ui/pkg"
@@ -35,7 +36,8 @@ func (j JetStreamSVC) GetMessageFromJetStream(ctx context.Context, req model.Get
 	}
 
 	pops := []jsm.PagerOption{
-		jsm.PagerSize(3),
+		jsm.PagerSize(100),
+		//jsm.PagerStartDelta(time.Now().Sub(time.Now().Add(-60 * time.Minute))),
 	}
 
 	pgr, err := str.PageContents(pops...)
@@ -49,7 +51,10 @@ func (j JetStreamSVC) GetMessageFromJetStream(ctx context.Context, req model.Get
 		msg, last, err := pgr.NextMsg(context.Background())
 		if err != nil {
 			log.Printf("pgr.NextMsg : %v", err)
-			return nil, err
+			return &model.GetMessageFromJetStreamResponse{
+				Messages: messages,
+				Total:    uint64(len(messages)),
+			}, nil
 		}
 		meta, err := jsm.ParseJSMsgMetadata(msg)
 		if err == nil {
@@ -132,4 +137,20 @@ func (j JetStreamSVC) GetAllStream() []model.Stream {
 
 	fmt.Println(missing)
 	return resp
+}
+
+func (j JetStreamSVC) PublishMessage(ctx context.Context, req model.PublishMessageReq) error {
+	url := "nats://localhost:4222"
+	nc, err := nats.Connect(url)
+	if err != nil {
+		log.Printf("cannot connect nats %v", err)
+		return err
+	}
+	js, _ := jetstream.New(nc)
+	_, err = js.Publish(ctx, req.Subject, []byte(req.Message))
+	if err != nil {
+		log.Printf("cannot publish message %v", err)
+		return err
+	}
+	return nil
 }

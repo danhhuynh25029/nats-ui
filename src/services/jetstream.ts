@@ -92,3 +92,20 @@ export const GetKeyFromBucket = async(req: GetKeyRequest) : Promise<GetKeyRespon
         throw err;      
     }
 }
+
+
+export interface PublishMessageReq{
+    Subject: string;
+    Message : string;
+}
+
+export const PublishMessage = async (req : PublishMessageReq) : Promise<boolean> => {
+        try {
+            const result =  await axios.post("http://localhost:8080/api/jetstream/publish", req);
+            return result.status < 400;
+
+        }catch(err) {
+            console.log(err);
+            throw err;
+        }
+}

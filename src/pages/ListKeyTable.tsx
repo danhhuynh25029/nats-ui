@@ -1,14 +1,13 @@
 import { DataTable } from "@/components/DataTable"
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
-import { GetMessageFromJetStreamReq, GetMessageFormJetStream, GetKeyRequest, GetKeyFromBucket } from "@/services/jetstream"
+import { Key, GetKeyRequest, GetKeyFromBucket } from "@/services/jetstream"
 import { Separator } from "@radix-ui/react-separator"
 import { ColumnDef } from "@tanstack/react-table"
 import React from "react"
-import { Message } from "react-hook-form"
 import { useSearchParams } from "react-router-dom"
 
-const columnMessage: ColumnDef<Message>[] = [
+const columnMessage: ColumnDef<Key>[] = [
     {
         accessorKey: "key",
         header: "Key Name",
@@ -20,9 +19,9 @@ const columnMessage: ColumnDef<Message>[] = [
 ]
 
 export const ListKeyTable = () => {
-    const [data, setData] = React.useState<any[]>([])
-    const [columns, setColumn] = React.useState<ColumnDef<any>[]>([])
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [data, setData] = React.useState<Key[]>([])
+    const [columns, setColumn] = React.useState<ColumnDef<Key>[]>([])
+    const [searchParams] = useSearchParams();
      React.useEffect(() => {
             const fetchMessage = async () => {
                     const req: GetKeyRequest = {

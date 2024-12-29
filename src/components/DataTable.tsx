@@ -17,17 +17,6 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import * as React from "react";
-import {
-    GetMessageFormJetStream,
-    GetMessageFromJetStreamReq,
-    GetStreamFromJetStream,
-    Message,
-    Stream
-} from "@/services/jetstream.ts";
-import { formToJSON } from "axios";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
-import { Button } from "./ui/button";
 
 
 interface DataTableProps {
@@ -38,12 +27,16 @@ interface DataTableProps {
 
 
 export const DataTable: React.FC<DataTableProps> = ({ breadItems,data,columns}) => {
-
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
+        // getPaginationRowModel: getPaginationRowModel(),
+        initialState : {
+            pagination:{
+                pageSize :data ? data.length : 0,
+            }
+        }
     })
     return (
         <>
@@ -68,7 +61,8 @@ export const DataTable: React.FC<DataTableProps> = ({ breadItems,data,columns}) 
                     ))}
                 </TableHeader>
                 <TableBody>
-                    {table.getRowModel().rows?.length ? (
+                    {
+                        table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
                             <TableRow
                                 key={row.id}
@@ -92,22 +86,23 @@ export const DataTable: React.FC<DataTableProps> = ({ breadItems,data,columns}) 
             </Table>
         </div>
         <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-        >
-            Previous
-        </Button>
-        <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-        >
-            Next
-        </Button>
+        {/*  Support pagination  */}
+        {/*<Button*/}
+        {/*    variant="outline"*/}
+        {/*    size="sm"*/}
+        {/*    onClick={() => table.previousPage()}*/}
+        {/*    disabled={!table.getCanPreviousPage()}*/}
+        {/*>*/}
+        {/*    Previous*/}
+        {/*</Button>*/}
+        {/*<Button*/}
+        {/*    variant="outline"*/}
+        {/*    size="sm"*/}
+        {/*    onClick={() => table.nextPage()}*/}
+        {/*    disabled={!table.getCanNextPage()}*/}
+        {/*>*/}
+        {/*    Next*/}
+        {/*</Button>*/}
     </div>
     </>
     )

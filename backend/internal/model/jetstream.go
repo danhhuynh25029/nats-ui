@@ -50,3 +50,9 @@ type GetKeysResp struct {
 	Keys  []KeyValue `json:"keys"`
 	Total int        `json:"total"`
 }
+
+type PublishMessageReq struct {
+	Stream  string `json:"stream"`
+	Subject string `json:"subject"`
+	Message string `json:"message"`
+}
