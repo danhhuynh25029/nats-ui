@@ -1,0 +1,48 @@
+"use client"
+
+import { useToast } from "@/hooks/use-toast"
+import { Button } from "@/components/ui/button"
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb"
+import { Separator } from "@radix-ui/react-separator"
+
+export function PublishMessage() {
+    const { toast } = useToast()
+
+    return (
+        <>
+            <SidebarInset>
+                <header className="flex h-16 shrink-0 items-center gap-2 px-4">
+                    <SidebarTrigger className="-ml-1" />
+                    <Separator orientation="vertical" className="mr-2 h-4" />
+                    <Breadcrumb>
+                        <BreadcrumbList>
+                            <BreadcrumbItem className="hidden md:block">
+                                <BreadcrumbLink href="#">Documentation</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="hidden md:block" />
+                            <BreadcrumbItem>
+                                <BreadcrumbPage>Stream</BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </header>
+                <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+                    <div className="container mx-auto py-10">
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                console.log("hello")
+                                toast({
+                                    description: "Your message has been sent.",
+                                })
+                            }}
+                        >
+                            Show Toast
+                        </Button>
+                    </div>
+                </div>
+            </SidebarInset>
+        </>
+    )
+}
