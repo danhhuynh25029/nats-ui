@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type GetMessageFromJetStreamRequest struct {
 	StreamName string `json:"stream_name" binding:"required"`
@@ -55,4 +57,21 @@ type PublishMessageReq struct {
 	Stream  string `json:"stream"`
 	Subject string `json:"subject"`
 	Message string `json:"message"`
+}
+
+type CreateStreamReq struct {
+	StreamName string `json:"stream_name"`
+	// TODO : support subject list
+	Subject string `json:"subject"`
+	Storage int    `json:"storage"`
+}
+
+type CreateBucket struct {
+	BucketName string `json:"bucket_name"`
+}
+
+type CreateKeyReq struct {
+	BucketName string `json:"bucket_name"`
+	Key        string `json:"key"`
+	Value      string `json:"value"`
 }

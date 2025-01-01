@@ -6,6 +6,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/nats-io/jsm.go"
 	"github.com/nats-io/nats.go"
+	"github.com/nats-io/nats.go/jetstream"
 	"log"
 	"nats-ui/internal/model"
 	"nats-ui/pkg"
@@ -13,7 +14,7 @@ import (
 	"time"
 )
 
-func (j JetStreamSVC) GetListKeyOfBucket(ctx context.Context, req model.GetKeysReq) (*model.GetKeysResp, error) {
+func (j JetStreamUseCase) GetListKeyOfBucket(ctx context.Context, req model.GetKeysReq) (*model.GetKeysResp, error) {
 
 	_, js, err := pkg.PrepareJSHelper()
 	if err != nil {
@@ -49,7 +50,7 @@ func (j JetStreamSVC) GetListKeyOfBucket(ctx context.Context, req model.GetKeysR
 	}, nil
 }
 
-func (j JetStreamSVC) GetListBucket(ctx context.Context) ([]model.Stream, error) {
+func (j JetStreamUseCase) GetListBucket(ctx context.Context) ([]model.Stream, error) {
 	var found []*jsm.Stream
 	url := "nats://localhost:4222"
 	nc, err := nats.Connect(url)
@@ -95,4 +96,49 @@ func (j JetStreamSVC) GetListBucket(ctx context.Context) ([]model.Stream, error)
 		}
 	}
 	return resp, nil
+}
+
+func (j JetStreamUseCase) CreateBucket(ctx context.Context, req model.CreateBucket) error {
+	url := "nats://localhost:4222"
+
+	nc, _ := nats.Connect(url)
+	defer nc.Drain()
+
+	js, _ := jetstream.New(nc)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	_, err := js.CreateKeyValue(ctx, jetstream.KeyValueConfig{
+		Bucket: req.BucketName,
+	})
+
+	if err != nil {
+		log.Printf("Error creating bucket %v", err)
+		return err
+	}
+	return nil
+
+}
+
+func (j JetStreamUseCase) CreateKey(ctx context.Context, req model.CreateKeyReq) error {
+	url := "nats://localhost:4222"
+
+	nc, _ := nats.Connect(url)
+	defer nc.Drain()
+
+	js, _ := jetstream.New(nc)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	kv, err := js.KeyValue(ctx, req.BucketName)
+	if err != nil {
+		log.Printf("Error bind to bucket  %v", err)
+		return err
+	}
+	_, err = kv.Put(ctx, req.Key, []byte(req.Value))
+	if err != nil {
+		log.Printf("Error putting color %v", err)
+		return err
+	}
+	return nil
 }

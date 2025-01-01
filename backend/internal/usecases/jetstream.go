@@ -13,14 +13,14 @@ import (
 	"time"
 )
 
-type JetStreamSVC struct {
+type JetStreamUseCase struct {
 }
 
-func NewJetStreamSVC() *JetStreamSVC {
-	return &JetStreamSVC{}
+func NewJetStreamSVC() *JetStreamUseCase {
+	return &JetStreamUseCase{}
 }
 
-func (j JetStreamSVC) GetMessageFromJetStream(ctx context.Context, req model.GetMessageFromJetStreamRequest) (*model.GetMessageFromJetStreamResponse, error) {
+func (j JetStreamUseCase) GetMessageFromJetStream(ctx context.Context, req model.GetMessageFromJetStreamRequest) (*model.GetMessageFromJetStreamResponse, error) {
 
 	url := "nats://localhost:4222"
 	nc, err := nats.Connect(url)
@@ -83,7 +83,7 @@ func (j JetStreamSVC) GetMessageFromJetStream(ctx context.Context, req model.Get
 	}, nil
 }
 
-func (j JetStreamSVC) GetAllStream() []model.Stream {
+func (j JetStreamUseCase) GetAllStream() []model.Stream {
 	var filter *jsm.StreamNamesFilter
 
 	var streams []*jsm.Stream
@@ -139,7 +139,7 @@ func (j JetStreamSVC) GetAllStream() []model.Stream {
 	return resp
 }
 
-func (j JetStreamSVC) PublishMessage(ctx context.Context, req model.PublishMessageReq) error {
+func (j JetStreamUseCase) PublishMessage(ctx context.Context, req model.PublishMessageReq) error {
 	url := "nats://localhost:4222"
 	nc, err := nats.Connect(url)
 	if err != nil {
@@ -147,9 +147,41 @@ func (j JetStreamSVC) PublishMessage(ctx context.Context, req model.PublishMessa
 		return err
 	}
 	js, _ := jetstream.New(nc)
+
+	//_, err = js.Stream(ctx, req.Stream)
+	//if err != nil {
+	//	log.Printf("cannot bind message %v", err)
+	//	return err
+	//}
+
 	_, err = js.Publish(ctx, req.Subject, []byte(req.Message))
 	if err != nil {
 		log.Printf("cannot publish message %v", err)
+		return err
+	}
+	return nil
+}
+
+func (j JetStreamUseCase) CreateStream(ctx context.Context, req model.CreateStreamReq) error {
+	url := "nats://localhost:4222"
+	nc, _ := nats.Connect(url)
+	defer nc.Drain()
+
+	js, _ := jetstream.New(nc)
+
+	cfg := jetstream.StreamConfig{
+		Name:     req.StreamName,
+		Subjects: []string{req.Subject},
+	}
+
+	cfg.Storage = jetstream.StorageType(req.Storage)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	_, err := js.CreateStream(ctx, cfg)
+	if err != nil {
+		log.Printf("cannot create stream %v", err)
 		return err
 	}
 	return nil

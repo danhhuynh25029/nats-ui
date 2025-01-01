@@ -19,4 +19,7 @@ func (u *Router) UseRoute(r *gin.RouterGroup) {
 	group.POST("/keys", u.handler.GetBucketKeys)
 	group.GET("/buckets", u.handler.GetAllBuckets)
 	group.POST("/publish", u.handler.PublishMessage)
+	group.POST("/streams/create", u.handler.CreateStream)
+	group.POST("/buckets/create", u.handler.CreateBucket)
+	group.POST("/keys/create", u.handler.CreateKey)
 }

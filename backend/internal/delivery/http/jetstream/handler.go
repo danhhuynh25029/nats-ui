@@ -8,12 +8,12 @@ import (
 )
 
 type Handler struct {
-	JetStreamBiz *usecases.JetStreamSVC
+	JetStreamUseCase *usecases.JetStreamUseCase
 }
 
-func NewJetStreamHandler(useCase *usecases.JetStreamSVC) *Handler {
+func NewJetStreamHandler(useCase *usecases.JetStreamUseCase) *Handler {
 	return &Handler{
-		JetStreamBiz: useCase,
+		JetStreamUseCase: useCase,
 	}
 }
 
@@ -23,7 +23,7 @@ func (u *Handler) GetMessageFromJetStream(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	resp, err := u.JetStreamBiz.GetMessageFromJetStream(ctx, req)
+	resp, err := u.JetStreamUseCase.GetMessageFromJetStream(ctx, req)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -32,12 +32,12 @@ func (u *Handler) GetMessageFromJetStream(ctx *gin.Context) {
 }
 
 func (u *Handler) GetAllStream(ctx *gin.Context) {
-	resp := u.JetStreamBiz.GetAllStream()
+	resp := u.JetStreamUseCase.GetAllStream()
 	ctx.JSON(http.StatusOK, resp)
 }
 
 func (u *Handler) GetAllBuckets(ctx *gin.Context) {
-	resp, err := u.JetStreamBiz.GetListBucket(ctx)
+	resp, err := u.JetStreamUseCase.GetListBucket(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -51,7 +51,7 @@ func (u *Handler) GetBucketKeys(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	keys, err := u.JetStreamBiz.GetListKeyOfBucket(ctx, req)
+	keys, err := u.JetStreamUseCase.GetListKeyOfBucket(ctx, req)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -66,7 +66,50 @@ func (u *Handler) PublishMessage(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	err := u.JetStreamBiz.PublishMessage(ctx, req)
+	err := u.JetStreamUseCase.PublishMessage(ctx, req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, nil)
+}
+
+func (u *Handler) CreateStream(ctx *gin.Context) {
+	var req model.CreateStreamReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	err := u.JetStreamUseCase.CreateStream(ctx, req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, nil)
+}
+
+func (u *Handler) CreateBucket(ctx *gin.Context) {
+	var req model.CreateBucket
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := u.JetStreamUseCase.CreateBucket(ctx, req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, nil)
+}
+
+func (u *Handler) CreateKey(ctx *gin.Context) {
+	var req model.CreateKeyReq
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	err := u.JetStreamUseCase.CreateKey(ctx, req)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

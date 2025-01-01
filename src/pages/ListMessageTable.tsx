@@ -83,7 +83,6 @@ export const ListMessageTable = () => {
                 setIsLoading(true)
             }
         }catch(error){
-            console.log("err")
             console.log( error)
             throw error;
         }
@@ -96,24 +95,12 @@ export const ListMessageTable = () => {
             <header className="flex h-16 shrink-0 items-center gap-2 px-4">
                 <SidebarTrigger className="-ml-1" />
                 <Separator orientation="vertical" className="mr-2 h-4" />
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem className="hidden md:block">
-                            <BreadcrumbLink href="#">Documentation</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="hidden md:block" />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>Stream</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>   
-                </Breadcrumb>
             </header>
             <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
                 <div className="container mx-auto py-10">
                     <div className="py-1">
                     <Dialog>
                         <DialogTrigger asChild>
-                            {/*<span>Publish Message</span>*/}
                             <Button variant="outline" >Publish Message</Button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
@@ -142,7 +129,6 @@ export const ListMessageTable = () => {
                                     </Button>
                                 </DialogClose>
                             </DialogFooter>
-
                         </DialogContent>
                     </Dialog>
                     </div>

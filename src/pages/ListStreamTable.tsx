@@ -3,12 +3,32 @@ import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbS
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
-import {GetStreamFromJetStream, Stream} from "@/services/jetstream"
+import {
+    CreateStream,
+    CreateStreamReq,
+    GetStreamFromJetStream,
+    PublishMessage,
+    PublishMessageReq,
+    Stream
+} from "@/services/jetstream"
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
 import React from "react"
 
 import {Separator} from "@/components/ui/separator.tsx";
+import {
+    Dialog, DialogClose,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog.tsx";
+import {Label} from "@/components/ui/label.tsx";
+import {Input} from "@/components/ui/input.tsx";
+import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group.tsx";
+import {Simulate} from "react-dom/test-utils";
+import select = Simulate.select;
 
 
 
@@ -61,7 +81,7 @@ const columnsStream: ColumnDef<Stream>[] = [
 export const ListStreamTable = () => {
     const [data, setData] = React.useState<Stream[]>([])
     const [columns, setColumn] = React.useState<ColumnDef<Stream>[]>([])
-
+    const [isLoading, setIsLoading] = React.useState(false)
 
     React.useEffect(() => {
         const fetchMessage = async () => {
@@ -75,28 +95,86 @@ export const ListStreamTable = () => {
             }
         }
         fetchMessage()
-    }, []);
+    }, [isLoading]);
+
+    const handleEventCreateStream  =  async () => {
+        const textarea = document.getElementById('streamName') as HTMLInputElement
+        console.log(textarea.value)
+        const input = document.getElementById("subject") as HTMLInputElement
+        console.log(input.value)
+        // add component select type storge
+        try {
+            const req : CreateStreamReq = {
+                subject : input.value,
+                stream_name : textarea.value,
+                storage: 0,
+            }
+            const result = await CreateStream(req)
+            if (result) {
+                setIsLoading(true)
+            }
+        }catch(error){
+            console.log("err")
+            console.log( error)
+            throw error;
+        }
+
+    }
     return (
         <>
             <SidebarInset>
                 <header className="flex h-16 shrink-0 items-center gap-2 px-4">
                     <SidebarTrigger className="-ml-1" />
                     <Separator orientation="vertical" className="mr-2 h-4" />
-                    <Breadcrumb>
-                        <BreadcrumbList>
-                            <BreadcrumbItem className="hidden md:block">
-                                <BreadcrumbLink href="#">Documentation</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator className="hidden md:block" />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>Streams</BreadcrumbPage>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
                 </header>
                 <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
                     <div className="container mx-auto py-10">
-                        <DataTable breadItems={["Stream"]} data={data} columns={columns} />
+                        <div className="py-1">
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline">Create Stream</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                    <DialogHeader>
+                                        <DialogTitle>Create Stream</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="grid gap-4 py-4">
+                                        <div className="grid w-full gap-1.5">
+                                            <Label htmlFor="streamName">
+                                                Stream Name
+                                            </Label>
+                                            <Input
+                                                id="streamName"
+                                                className="col-span-3"
+                                            />
+                                        </div>
+                                        <div className="grid w-full gap-1.5">
+                                            <Label htmlFor="subject">
+                                                Subject
+                                            </Label>
+                                            <Input
+                                                id="subject"
+                                                className="col-span-3"
+                                            />
+                                        </div>
+                                        <div className="grid w-full gap-1.5">
+                                            <Label htmlFor="storage">
+                                                Storage
+                                            </Label>
+
+                                        </div>
+                                    </div>
+                                    <DialogFooter>
+                                        <DialogClose>
+                                            <Button type="button" onClick={handleEventCreateStream}>
+                                                Create
+                                            </Button>
+                                        </DialogClose>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
+                        <DataTable breadItems={["Stream"]} data={data} columns={columns}/>
                     </div>
                 </div>
             </SidebarInset>

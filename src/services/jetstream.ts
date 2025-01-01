@@ -109,3 +109,50 @@ export const PublishMessage = async (req : PublishMessageReq) : Promise<boolean>
             throw err;
         }
 }
+
+export interface  CreateBucketReq {
+    bucket_name: string;
+}
+
+export const CreateBucket = async (req : CreateBucketReq) : Promise<boolean> => {
+    try {
+        const result =  await axios.post("http://localhost:8080/api/jetstream/buckets/create", req);
+        return result.status < 400;
+    }catch(err) {
+        console.log(err);
+        throw err;
+    }
+}
+
+export interface CreateKeyReq {
+    bucket_name: string | null;
+    key : string;
+    value: string;
+}
+
+export const CreateKey = async (req : CreateKeyReq) : Promise<boolean> => {
+    try {
+        const result =  await axios.post("http://localhost:8080/api/jetstream/keys/create", req);
+        return result.status < 400;
+    }catch(err) {
+        console.log(err);
+        throw err;
+    }
+}
+
+export interface CreateStreamReq{
+    subject: string;
+    stream_name: string;
+    storage : number;
+}
+
+
+export const CreateStream = async (req : CreateStreamReq) : Promise<boolean> => {
+    try {
+        const result =  await axios.post("http://localhost:8080/api/jetstream/streams/create",req);
+        return result.status < 400;
+    }catch(err) {
+        console.log(err);
+        throw err;
+    }
+}
