@@ -1,13 +1,9 @@
 import { DataTable } from "@/components/DataTable"
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import {
-    CreateBucket,
-    CreateBucketRequest,
-    CreateStream,
-    CreateStreamReq,
+    CreateBucket, CreateBucketReq,
     GetBucketFromJetStream,
     Stream
 } from "@/services/jetstream"
@@ -25,7 +21,6 @@ import {
 } from "@/components/ui/dialog.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {Textarea} from "@/components/ui/textarea.tsx";
 
 
 
@@ -94,7 +89,7 @@ export const ListBucketTable = () => {
         const input = document.getElementById("bucket_name") as HTMLInputElement
         // add component select type storge
         try {
-            const req : CreateBucketRequest = {
+            const req : CreateBucketReq = {
                 bucket_name : input.value,
             }
             const result = await CreateBucket(req)

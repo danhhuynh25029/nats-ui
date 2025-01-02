@@ -128,7 +128,7 @@ func (j JetStreamUseCase) GetAllStream() []model.Stream {
 			Name:         v.Name(),
 			Size:         humanize.IBytes(nfo.State.Bytes),
 			TotalMessage: nfo.State.Msgs,
-			Created:      nfo.Created.Local(),
+			Created:      nfo.Created.Local().Format(time.DateTime),
 			LastMessage:  pkg.SinceRefOrNow(nfo.TimeStamp, nfo.State.LastTime).String(),
 			Consumers:    consumers,
 		}
@@ -148,11 +148,11 @@ func (j JetStreamUseCase) PublishMessage(ctx context.Context, req model.PublishM
 	}
 	js, _ := jetstream.New(nc)
 
-	//_, err = js.Stream(ctx, req.Stream)
-	//if err != nil {
-	//	log.Printf("cannot bind message %v", err)
-	//	return err
-	//}
+	_, err = js.Stream(ctx, req.Stream)
+	if err != nil {
+		log.Printf("cannot bind message %v", err)
+		return err
+	}
 
 	_, err = js.Publish(ctx, req.Subject, []byte(req.Message))
 	if err != nil {

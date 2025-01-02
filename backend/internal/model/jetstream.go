@@ -1,9 +1,5 @@
 package model
 
-import (
-	"time"
-)
-
 type GetMessageFromJetStreamRequest struct {
 	StreamName string `json:"stream_name" binding:"required"`
 }
@@ -25,7 +21,7 @@ type Stream struct {
 	Name         string     `json:"name"`
 	TotalMessage uint64     `json:"total_message"`
 	Size         string     `json:"size"`
-	Created      time.Time  `json:"created"`
+	Created      string     `json:"created"`
 	LastMessage  string     `json:"last_message"`
 	Consumers    []Consumer `json:"consumers"`
 }
