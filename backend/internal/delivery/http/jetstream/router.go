@@ -22,4 +22,5 @@ func (u *Router) UseRoute(r *gin.RouterGroup) {
 	group.POST("/streams/create", u.handler.CreateStream)
 	group.POST("/buckets/create", u.handler.CreateBucket)
 	group.POST("/keys/create", u.handler.CreateKey)
+
 }

@@ -6,6 +6,7 @@ require (
 	github.com/choria-io/fisk v0.6.2
 	github.com/dustin/go-humanize v1.0.1
 	github.com/gin-contrib/cors v1.7.2
+	github.com/gin-gonic/contrib v0.0.0-20241229022435-d12709533de6
 	github.com/gin-gonic/gin v1.10.0
 	github.com/nats-io/jsm.go v0.1.2
 	github.com/nats-io/nats.go v1.38.0
@@ -31,7 +32,6 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/nats-io/natscli v0.1.5 // indirect
 	github.com/nats-io/nkeys v0.4.9 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
