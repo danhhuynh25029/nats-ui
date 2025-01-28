@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	jetstream2 "nats-ui/internal/delivery/http/jetstream"
+	"nats-ui/internal/ui"
 	"nats-ui/internal/usecases"
 )
 
@@ -21,5 +22,6 @@ func main() {
 	jetStreamRouter := jetstream2.NewRouter(jetStreamHandler)
 	jetStreamRouter.UseRoute(group)
 
+	ui.AddRoutes(r)
 	r.Run() // listen and serve on 0.0.0.0:8080
 }

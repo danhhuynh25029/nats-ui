@@ -88,7 +88,7 @@ func (j JetStreamUseCase) GetListBucket(ctx context.Context) ([]model.Stream, er
 				Name:         strings.Join(name[1:], ""),
 				Size:         humanize.IBytes(nfo.State.Bytes),
 				TotalMessage: nfo.State.Msgs,
-				Created:      nfo.Created.Local(),
+				Created:      nfo.Created.Local().Format(time.DateTime),
 				LastMessage:  pkg.SinceRefOrNow(nfo.TimeStamp, nfo.State.LastTime).String(),
 				Consumers:    consumers,
 			}

@@ -1,5 +1,4 @@
 import { DataTable } from "@/components/DataTable"
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
@@ -7,8 +6,6 @@ import {
     CreateStream,
     CreateStreamReq,
     GetStreamFromJetStream,
-    PublishMessage,
-    PublishMessageReq,
     Stream
 } from "@/services/jetstream"
 import { ColumnDef } from "@tanstack/react-table"
@@ -26,9 +23,17 @@ import {
 } from "@/components/ui/dialog.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group.tsx";
-import {Simulate} from "react-dom/test-utils";
-import select = Simulate.select;
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue
+} from "@/components/ui/select.tsx";
+import {Card, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {Badge} from "@/components/ui/badge.tsx";
 
 
 
@@ -82,12 +87,11 @@ export const ListStreamTable = () => {
     const [data, setData] = React.useState<Stream[]>([])
     const [columns, setColumn] = React.useState<ColumnDef<Stream>[]>([])
     const [isLoading, setIsLoading] = React.useState(false)
-
+    const [storage, setStorage] = React.useState("")
     React.useEffect(() => {
         const fetchMessage = async () => {
             try {
                 const resp = await GetStreamFromJetStream();
-                console.log(resp)
                 setData(resp)
                 setColumn(columnsStream)
             } catch (e) {
@@ -99,22 +103,19 @@ export const ListStreamTable = () => {
 
     const handleEventCreateStream  =  async () => {
         const textarea = document.getElementById('streamName') as HTMLInputElement
-        console.log(textarea.value)
+        // Allow with multiple subject
         const input = document.getElementById("subject") as HTMLInputElement
-        console.log(input.value)
-        // add component select type storge
         try {
             const req : CreateStreamReq = {
                 subject : input.value,
                 stream_name : textarea.value,
-                storage: 0,
+                storage: Number(storage),
             }
             const result = await CreateStream(req)
             if (result) {
                 setIsLoading(true)
             }
         }catch(error){
-            console.log("err")
             console.log( error)
             throw error;
         }
@@ -123,12 +124,45 @@ export const ListStreamTable = () => {
     return (
         <>
             <SidebarInset>
-                <header className="flex h-16 shrink-0 items-center gap-2 px-4">
+                <header className="flex h-16 shrink-0 items-center gap-2 px-4 justify-between ">
                     <SidebarTrigger className="-ml-1" />
                     <Separator orientation="vertical" className="mr-2 h-4" />
+                    <Select defaultValue="30">
+                        <SelectTrigger className="w-[180px]" >
+                            <SelectValue placeholder="Select time interval" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem value="30">30s</SelectItem>
+                                <SelectItem value="60">1m</SelectItem>
+                                <SelectItem value="0">Disable Auto</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+
                 </header>
+                <div className="flex flex-row gap-4 pl-4">
+                    <Card className="w-1/5">
+                        <CardHeader>
+                            <CardTitle>Total Streams</CardTitle>
+                            <CardDescription> <Badge className="bg-green-100 text-green-800 hover:bg-green-100 ">10</Badge></CardDescription>
+                        </CardHeader>
+                    </Card>
+                    <Card className="w-1/5">
+                        <CardHeader>
+                            <CardTitle><span className="h-0.5">Total Consumers</span></CardTitle>
+                            <CardDescription><Badge className="bg-green-100 text-green-800 hover:bg-green-100 ">10</Badge></CardDescription>
+                        </CardHeader>
+                    </Card>
+                    <Card className="w-1/5">
+                        <CardHeader>
+                            <CardTitle>Total Subjects</CardTitle>
+                            <CardDescription><Badge className="bg-green-100 text-green-800 hover:bg-green-100 ">10</Badge></CardDescription>
+                        </CardHeader>
+                    </Card>
+                </div>
                 <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                    <div className="container mx-auto py-10">
+                    <div className="container mx-auto py-5">
                         <div className="py-1">
                             <Dialog>
                                 <DialogTrigger asChild>
@@ -161,7 +195,15 @@ export const ListStreamTable = () => {
                                             <Label htmlFor="storage">
                                                 Storage
                                             </Label>
-
+                                            <Select value={storage} onValueChange={setStorage}>
+                                                <SelectTrigger id="storage">
+                                                    <SelectValue placeholder="Select" />
+                                                </SelectTrigger>
+                                                <SelectContent position="popper">
+                                                    <SelectItem value="0">File</SelectItem>
+                                                    <SelectItem value="1">Memory</SelectItem>
+                                                </SelectContent>
+                                            </Select>
                                         </div>
                                     </div>
                                     <DialogFooter>

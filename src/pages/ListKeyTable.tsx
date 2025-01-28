@@ -4,7 +4,6 @@ import {
     Key,
     GetKeyRequest,
     GetKeyFromBucket,
-    CreateBucket,
     CreateKeyReq, CreateKey
 } from "@/services/jetstream"
 import { Separator } from "@radix-ui/react-separator"
